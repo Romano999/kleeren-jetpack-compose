@@ -18,33 +18,33 @@ import nl.romano.kleeren.screens.splash.SplashScreen
 fun KleerenNavigation(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = KleerenScreens.SplashScreen.name
+        startDestination = KleerenScreens.SplashScreen.route
     ) {
-        composable(KleerenScreens.AccountScreen.name) {
+        composable(KleerenScreens.AccountScreen.route) {
             AccountScreen(navController = navController)
         }
-        composable(KleerenScreens.CreateAccountScreen.name) {
+        composable(KleerenScreens.CreateAccountScreen.route) {
             CreateAccountScreen(navController = navController)
         }
-        composable(KleerenScreens.FavouriteScreen.name) {
+        composable(KleerenScreens.FavouriteScreen.route) {
             FavouriteScreen(navController = navController)
         }
-        composable(KleerenScreens.HomeScreen.name) {
+        composable(KleerenScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
         }
-        composable(KleerenScreens.LoginScreen.name) {
+        composable(KleerenScreens.LoginScreen.route) {
             LoginScreen(navController = navController)
         }
-        composable(KleerenScreens.ProductScreen.name) {
+        composable(KleerenScreens.ProductScreen.route) {
             ProductScreen(navController = navController)
         }
-        composable(KleerenScreens.SearchScreen.name) {
+        composable(KleerenScreens.SearchScreen.route) {
             SearchScreen(navController = navController)
         }
-        composable(KleerenScreens.ShoppingCartScreen.name) {
+        composable(KleerenScreens.ShoppingCartScreen.route) {
             ShoppingCartScreen(navController = navController)
         }
-        composable(KleerenScreens.SplashScreen.name) {
+        composable(KleerenScreens.SplashScreen.route) {
             SplashScreen(navController = navController)
         }
     }
