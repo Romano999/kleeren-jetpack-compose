@@ -1,7 +1,5 @@
 package nl.romano.kleeren.navigation
 
-import java.lang.IllegalArgumentException
-
 sealed class KleerenScreens(val route: String) {
     object SplashScreen : KleerenScreens(route = "splash")
     object LoginScreen : KleerenScreens(route = "login")
