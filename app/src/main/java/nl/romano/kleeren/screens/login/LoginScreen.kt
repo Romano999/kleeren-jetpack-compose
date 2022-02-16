@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.moment),
+            painter = painterResource(id = R.drawable.loginscreen_background),
             contentDescription = "background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillHeight
