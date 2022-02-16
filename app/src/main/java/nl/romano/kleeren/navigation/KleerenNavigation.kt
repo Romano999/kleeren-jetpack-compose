@@ -1,6 +1,7 @@
 package nl.romano.kleeren.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +15,7 @@ import nl.romano.kleeren.screens.search.SearchScreen
 import nl.romano.kleeren.screens.shoppingcart.ShoppingCartScreen
 import nl.romano.kleeren.screens.splash.SplashScreen
 
+@ExperimentalComposeUiApi
 @Composable
 fun KleerenNavigation(navController: NavHostController) {
     NavHost(

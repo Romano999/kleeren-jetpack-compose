@@ -6,7 +6,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
@@ -37,11 +36,11 @@ fun KleerenTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composabl
     if (darkTheme) {
         colors = DarkColorPalette
         systemUiController.setSystemBarsColor(
-            Color.Transparent
+            DarkGreen
         )
     } else {
         systemUiController.setSystemBarsColor(
-            Color.White
+            Green
         )
         colors = LightColorPalette
     }

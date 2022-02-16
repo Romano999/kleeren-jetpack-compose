@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -30,7 +31,8 @@ fun InputField(
     keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default,
-    shape: Shape = MaterialTheme.shapes.small
+    shape: Shape = MaterialTheme.shapes.small,
+    fontSize: TextUnit = 22.sp
 ) {
     OutlinedTextField(
         value = valueState.value,
@@ -39,7 +41,7 @@ fun InputField(
         leadingIcon = { Icon(imageVector = imageVector, contentDescription = "Icon") },
         singleLine = isSingleLine,
         textStyle = TextStyle(
-            fontSize = 18.sp,
+            fontSize = fontSize,
             color = MaterialTheme.colors.onBackground,
         ),
         modifier = modifier
