@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import nl.romano.kleeren.navigation.KleerenNavigation
 import nl.romano.kleeren.ui.theme.KleerenTheme
@@ -19,8 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             KleerenTheme {
                 MyApp {
-                    val navController = rememberNavController()
-                    KleerenNavigation(navController = navController)
+                    KleerenNavigation()
                 }
             }
         }
