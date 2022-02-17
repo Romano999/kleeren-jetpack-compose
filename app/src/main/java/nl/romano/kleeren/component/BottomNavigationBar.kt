@@ -6,11 +6,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import nl.romano.kleeren.ui.theme.DarkGreen
+import nl.romano.kleeren.ui.theme.Green
 import nl.romano.kleeren.ui.theme.LightGreen
 
 @Composable
@@ -23,7 +26,7 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.Account
     )
     BottomNavigation(
-        backgroundColor = Color.Green
+        backgroundColor = Green
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -31,7 +34,15 @@ fun BottomNavigationBar(navController: NavController) {
         navItems.forEach {
             BottomNavigationItem(
                 icon = { Icon(it.icon, contentDescription = it.title) },
-                label = { Text(text = it.title) },
+                label = {
+                    Text(
+                        text = it.title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Visible,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 selected = it.route == currentRoute,
                 onClick = {
                     navController.navigate(it.route) {
