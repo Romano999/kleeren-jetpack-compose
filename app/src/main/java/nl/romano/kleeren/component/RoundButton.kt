@@ -24,16 +24,18 @@ fun RoundButton(
     text: String,
     textColor: Color = Color.White,
     textFontWeight: FontWeight = FontWeight.Bold,
-    textFontSize: TextUnit = 18.sp
+    textFontSize: TextUnit = 18.sp,
+    enabled: Boolean = true
 ) {
     Button(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier
             .fillMaxWidth(0.8f)
             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
         shape = shape,
         contentPadding = contentPadding,
-        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
+        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
+        enabled = enabled
 
     ) {
         Text(
