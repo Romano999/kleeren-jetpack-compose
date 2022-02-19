@@ -3,41 +3,39 @@ package nl.romano.kleeren
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
+import dagger.hilt.android.AndroidEntryPoint
+import nl.romano.kleeren.navigation.KleerenNavigation
 import nl.romano.kleeren.ui.theme.KleerenTheme
 
+@ExperimentalComposeUiApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             KleerenTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
+                MyApp {
+                    KleerenNavigation()
                 }
             }
         }
     }
 }
 
+// Container function
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun MyApp(content: @Composable () -> Unit) {
+    KleerenTheme {
+        content()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     KleerenTheme {
-        Greeting("Android")
     }
 }
