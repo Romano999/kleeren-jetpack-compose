@@ -25,18 +25,20 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import nl.romano.kleeren.R
 import nl.romano.kleeren.component.InputField
 import nl.romano.kleeren.component.RoundButton
 import nl.romano.kleeren.model.UserCredentials
+import nl.romano.kleeren.navigation.KleerenScreens
 import nl.romano.kleeren.ui.theme.Green
 
 @ExperimentalComposeUiApi
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: LoginScreenViewModel = viewModel()
 ) {
     val emailInput = rememberSaveable {
         mutableStateOf("")
@@ -60,7 +62,7 @@ fun LoginScreen(
             contentScale = ContentScale.FillHeight
         )
         Surface(
-            color = Color.Transparent,
+            color = Color.DarkGray.copy(0.5f),
             modifier = Modifier.fillMaxHeight()
         ) {
             Column {
@@ -69,6 +71,7 @@ fun LoginScreen(
                 LoginForm(
                     emailInput,
                     passwordInput,
+                    navController,
                     onSubmit = { usercredentials ->
                         viewModel.signInWithEmailAndPassword(usercredentials) {
                             navController.popBackStack()
@@ -86,7 +89,7 @@ fun LoginHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(180.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -108,6 +111,7 @@ fun LoginHeader() {
 fun LoginForm(
     emailInput: MutableState<String>,
     passwordInput: MutableState<String>,
+    navController: NavController,
     onSubmit: (UserCredentials) -> Unit = { }
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -157,10 +161,10 @@ fun LoginForm(
             contentPadding = PaddingValues(15.dp),
         )
         RoundButton(
-            onClick = { },
+            onClick = { navController.navigate(KleerenScreens.CreateAccountScreen.route) },
             text = "Register",
             backgroundColor = Color.LightGray,
-            contentPadding = PaddingValues(15.dp)
+            contentPadding = PaddingValues(15.dp),
         )
     }
 }
