@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import nl.romano.kleeren.model.MUser
 import nl.romano.kleeren.model.UserCredentials
 
 class CreateAccountScreenViewModel : ViewModel() {
@@ -42,9 +43,8 @@ class CreateAccountScreenViewModel : ViewModel() {
 
     private fun createUser(displayName: String?) {
         val userId = auth.currentUser?.uid
-        val user = mutableMapOf<String, Any>()
-        user["user_id"] = userId.toString()
-        user["display_name"] = displayName.toString()
+        val user = MUser(id = null, userId = userId.toString(), displayName = displayName.toString())
+            .toMap()
 
         FirebaseFirestore
             .getInstance()
