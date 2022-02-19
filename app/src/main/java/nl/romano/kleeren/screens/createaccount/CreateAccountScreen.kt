@@ -74,11 +74,10 @@ fun CreateAccountScreen(
                     emailInput,
                     passwordInput,
                     navController,
-                    onSubmit = { /* usercredentials ->
-                        viewModel.signInWithEmailAndPassword(usercredentials) {
+                    onSubmit = { usercredentials ->
+                        viewModel.createUserWithEmailAndPassword(usercredentials) {
                             navController.popBackStack()
                         }
-                        */
                     }
                 )
             }
