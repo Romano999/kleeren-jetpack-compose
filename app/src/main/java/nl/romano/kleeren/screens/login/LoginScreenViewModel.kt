@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import nl.romano.kleeren.model.UserCredentials
+import javax.inject.Inject
 
-class LoginScreenViewModel : ViewModel() {
+@HiltViewModel
+class LoginScreenViewModel @Inject constructor() : ViewModel() {
     // val loadingState = MutableStateFlow()
     private val auth: FirebaseAuth = Firebase.auth
 
