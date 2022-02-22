@@ -1,6 +1,7 @@
 package nl.romano.kleeren.util
 
 import nl.romano.kleeren.model.MProduct
+import nl.romano.kleeren.model.UserSearch
 
 class ObjectMother {
     companion object {
@@ -29,6 +30,12 @@ class ObjectMother {
             )
 
             return listOf(productOne, productTwo)
+        }
+
+        fun genericUserSearchList(): List<UserSearch> {
+            val userSearchOne = UserSearch(searchTerm = "Shirt")
+            val userSearchTwo = UserSearch(searchTerm = "Pants")
+            return listOf(userSearchOne, userSearchTwo)
         }
     }
 }

@@ -29,7 +29,7 @@ fun InputField(
     enabled: Boolean = true,
     imageVector: ImageVector,
     isSingleLine: Boolean = true,
-    keyboardType: KeyboardType = KeyboardType.Number,
+    keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default,
     shape: Shape = MaterialTheme.shapes.small,
