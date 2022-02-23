@@ -33,7 +33,7 @@ fun ProductItems(products: List<MProduct>) {
             ) {
                 Image(
                     painter = rememberImagePainter(
-                        data = product.productImageURL,
+                        data = product.productUrl,
                         builder = {
                             this.listener(
                                 onError = { request, ex ->

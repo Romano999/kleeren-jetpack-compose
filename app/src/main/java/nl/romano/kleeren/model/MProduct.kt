@@ -7,8 +7,10 @@ class MProduct(
     val name: String,
     val description: String,
     val price: Long,
-    val productImageURL: String?
+    val productUrl: String?
 ) {
+    constructor() : this("", "", "", 0, "")
+
     companion object {
         fun toProduct(map: Map<String, Any>): MProduct {
             return MProduct(
@@ -16,7 +18,7 @@ class MProduct(
                 map["name"].toString(),
                 map["description"].toString(),
                 map["price"] as Long,
-                map["product_url"] as String?
+                map["productUrl"] as String?
             )
         }
     }
@@ -27,7 +29,7 @@ class MProduct(
             "name" to name,
             "description" to description,
             "price" to price,
-            "product_url" to productImageURL.toString()
+            "productUrl" to productUrl.toString()
         )
     }
 }
