@@ -9,17 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.romano.kleeren.model.MProduct
 import nl.romano.kleeren.ui.theme.Green
 import nl.romano.kleeren.util.WebshopProducts
 
-@Preview
 @Composable
 fun ProductsRow(
     title: String = "Title",
-    products: List<MProduct> = WebshopProducts.fillWebshopWithProducts()
+    products: List<MProduct> = WebshopProducts.fillWebshopWithProducts(),
+    onCardClick: (MProduct) -> Unit
 ) {
     Column() {
         Text(
@@ -40,6 +39,7 @@ fun ProductsRow(
             items(products) { product ->
                 ProductCard(
                     product = product,
+                    onClick = onCardClick
                 )
             }
         }
