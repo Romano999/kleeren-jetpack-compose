@@ -24,7 +24,7 @@ class InitializeFirestore {
     }
 
     private fun initializeUsersCollectionIfEmpty() {
-        val user = MUser(id = null, userId = "", displayName = "")
+        val user = MUser(id = null, userId = "", displayName = "", favorites = emptyList(), shoppingCart = emptyList())
 
         usersRef.get()
             .addOnSuccessListener {
