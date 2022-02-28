@@ -1,7 +1,9 @@
 package nl.romano.kleeren.model
 
+import java.util.UUID
+
 data class MUser(
-    val id: String?,
+    val id: String = UUID.randomUUID().toString(),
     val userId: String,
     val displayName: String,
     val favorites: List<MProduct>,
