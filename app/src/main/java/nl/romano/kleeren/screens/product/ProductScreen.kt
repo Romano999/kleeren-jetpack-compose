@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import nl.romano.kleeren.component.BottomNavigationBar
 import nl.romano.kleeren.model.MProduct
+import nl.romano.kleeren.navigation.KleerenScreens
 
 @Composable
 fun ProductScreen(
@@ -37,7 +38,13 @@ fun ProductScreen(
                 )
                 ProductOptions(
                     onCartClick = {},
-                    onFavoriteClick = {}
+                    onFavoriteClick = {
+                        if (viewModel.loggedIn) {
+                            viewModel.addToFavorites()
+                            return@ProductOptions
+                        }
+                        navController.navigate(KleerenScreens.LoginScreen.route)
+                    }
                 )
             } else {
                 CircularProgressIndicator()
@@ -91,10 +98,10 @@ fun ProductOptions(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Button(onClick = { onCartClick }) {
+        Button(onClick = onCartClick) {
             Text(text = "Add to cart")
         }
-        Button(onClick = { onFavoriteClick }) {
+        Button(onClick = onFavoriteClick) {
             Text(text = "Add to favorites")
         }
     }
