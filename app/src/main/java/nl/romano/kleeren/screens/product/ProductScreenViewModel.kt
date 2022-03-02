@@ -53,54 +53,41 @@ class ProductScreenViewModel @Inject constructor(
     fun addToFavorites() {
         viewModelScope.launch {
             if (auth.currentUser == null) {
-                Log.d("User", "addToFavorites: Not logged in!")
                 return@launch
             }
 
-            Log.d("User", "addToFavorites: Logged in!")
             val userId: String = auth.currentUser?.uid.toString()
-            lateinit var documentId: String
-
-            productRef.whereEqualTo("id", productId.trim()).get()
-                .addOnSuccessListener { product ->
-                    favoriteProduct = mutableStateOf(product.toObjects(MProduct::class.java).first())
-                }.continueWith {
-                    usersRef.whereEqualTo("userId", userId).get()
-                        .addOnSuccessListener {
-                            documentId = it.documents[0].id
-                        }.continueWith {
-                            usersRef.document(documentId).update("favorites", FieldValue.arrayUnion(favoriteProduct.value?.toMap()))
-                                .addOnSuccessListener {
-                                }
-                        }
-                }
+            val updateField = "favorites"
+            addProductToFirebaseArr(userId, updateField)
         }
     }
 
     fun addToCart() {
         viewModelScope.launch {
             if (auth.currentUser == null) {
-                Log.d("User", "addToCart: Not logged in!")
                 return@launch
             }
 
-            Log.d("User", "addToCart: Logged in!")
             val userId: String = auth.currentUser?.uid.toString()
-            lateinit var documentId: String
-
-            productRef.whereEqualTo("id", productId.trim()).get()
-                .addOnSuccessListener { product ->
-                    cartProduct = mutableStateOf(product.toObjects(MProduct::class.java).first())
-                }.continueWith {
-                    usersRef.whereEqualTo("userId", userId).get()
-                        .addOnSuccessListener {
-                            documentId = it.documents[0].id
-                        }.continueWith {
-                            usersRef.document(documentId).update("shoppingCart", FieldValue.arrayUnion(cartProduct.value?.toMap()))
-                                .addOnSuccessListener {
-                                }
-                        }
-                }
+            val updateField = "shoppingCart"
+            addProductToFirebaseArr(userId, updateField)
         }
+    }
+
+    fun addProductToFirebaseArr(userId: String, updateField: String) {
+        lateinit var documentId: String
+        productRef.whereEqualTo("id", productId.trim()).get()
+            .addOnSuccessListener { product ->
+                cartProduct = mutableStateOf(product.toObjects(MProduct::class.java).first())
+            }.continueWith {
+                usersRef.whereEqualTo("userId", userId).get()
+                    .addOnSuccessListener {
+                        documentId = it.documents[0].id
+                    }.continueWith {
+                        usersRef.document(documentId).update(updateField, FieldValue.arrayUnion(cartProduct.value?.toMap()))
+                            .addOnSuccessListener {
+                            }
+                    }
+            }
     }
 }
