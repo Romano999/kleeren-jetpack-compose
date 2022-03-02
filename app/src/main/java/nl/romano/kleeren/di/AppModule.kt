@@ -1,6 +1,10 @@
 package nl.romano.kleeren.di
 
 import android.content.Context
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.DialogNavigator
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -25,4 +29,11 @@ object AppModule {
     fun provideAppDatabase(@ApplicationContext context: Context): KleerenDatabase =
         Room.databaseBuilder(context, KleerenDatabase::class.java, "kleeren.db")
             .fallbackToDestructiveMigration().build()
+
+    @Singleton
+    @Provides
+    fun provideNavController(@ApplicationContext context: Context): NavController = NavHostController(context).apply {
+        navigatorProvider.addNavigator(ComposeNavigator())
+        navigatorProvider.addNavigator(DialogNavigator())
+    }
 }

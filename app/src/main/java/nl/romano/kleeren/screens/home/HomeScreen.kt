@@ -22,6 +22,7 @@ import nl.romano.kleeren.component.BottomNavigationBar
 import nl.romano.kleeren.component.ProductsRow
 import nl.romano.kleeren.component.RoundButton
 import nl.romano.kleeren.model.MProduct
+import nl.romano.kleeren.navigation.KleerenScreens
 import nl.romano.kleeren.ui.theme.Green
 
 @Composable
@@ -50,26 +51,38 @@ fun HomeScreen(
         ) {
             HomeScreenHeader()
             Spacer(modifier = Modifier.height(50.dp))
-            SalesRow(salesProducts)
+            SalesRow(salesProducts, navController)
             Spacer(modifier = Modifier.height(50.dp))
-            ArrivalsRow(arrivalProducts)
+            ArrivalsRow(arrivalProducts, navController)
         }
     }
 }
 
 @Composable
-fun SalesRow(products: List<MProduct>) {
+fun SalesRow(
+    products: List<MProduct>,
+    navController: NavController
+) {
     ProductsRow(
         title = "Sales",
-        products = products
+        products = products,
+        onCardClick = { product ->
+            navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+        }
     )
 }
 
 @Composable
-fun ArrivalsRow(products: List<MProduct>) {
+fun ArrivalsRow(
+    products: List<MProduct>,
+    navController: NavController
+) {
     ProductsRow(
         "New Arrivals",
-        products = products
+        products = products,
+        onCardClick = { product ->
+            navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+        }
     )
 }
 

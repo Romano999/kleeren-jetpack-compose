@@ -19,7 +19,6 @@ import nl.romano.kleeren.ui.theme.DarkGreen
 import nl.romano.kleeren.ui.theme.Green
 
 @Composable
-
 fun ProductCard(
     product: MProduct,
     onClick: (MProduct) -> Unit

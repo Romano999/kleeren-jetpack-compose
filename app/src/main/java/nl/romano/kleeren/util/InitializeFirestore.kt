@@ -24,12 +24,12 @@ class InitializeFirestore {
     }
 
     private fun initializeUsersCollectionIfEmpty() {
-        val user = MUser(id = null, userId = "", displayName = "")
+        val user = MUser(userId = "", displayName = "", favorites = emptyList(), shoppingCart = emptyList())
 
         usersRef.get()
             .addOnSuccessListener {
                 if (it.isEmpty) {
-                    db.collection("users").document().set(user.toMap())
+                    db.collection("users").document(user.id).set(user.toMap())
                 }
             }
     }

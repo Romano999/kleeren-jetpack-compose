@@ -2,9 +2,11 @@ package nl.romano.kleeren.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import nl.romano.kleeren.screens.account.AccountScreen
 import nl.romano.kleeren.screens.createaccount.CreateAccountScreen
 import nl.romano.kleeren.screens.favourite.FavouriteScreen
@@ -38,8 +40,15 @@ fun KleerenNavigation() {
         composable(KleerenScreens.LoginScreen.route) {
             LoginScreen(navController = navController)
         }
-        composable(KleerenScreens.ProductScreen.route) {
-            ProductScreen(navController = navController)
+        composable(
+            KleerenScreens.ProductScreen.route + "/{product}",
+            arguments = listOf(navArgument(name = "product") { type = NavType.StringType })
+        ) {
+            backStackEntry ->
+            ProductScreen(
+                navController = navController,
+                backStackEntry.arguments?.getString("product")
+            )
         }
         composable(KleerenScreens.SearchScreen.route) {
             SearchScreen(navController = navController)

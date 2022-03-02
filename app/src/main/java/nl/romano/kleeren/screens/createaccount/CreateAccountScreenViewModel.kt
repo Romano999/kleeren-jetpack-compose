@@ -46,8 +46,12 @@ class CreateAccountScreenViewModel @Inject constructor() : ViewModel() {
 
     private fun createUser(displayName: String?) {
         val userId = auth.currentUser?.uid
-        val user = MUser(id = null, userId = userId.toString(), displayName = displayName.toString())
-            .toMap()
+        val user = MUser(
+            userId = userId.toString(),
+            displayName = displayName.toString(),
+            favorites = emptyList(),
+            shoppingCart = emptyList()
+        ).toMap()
 
         FirebaseFirestore
             .getInstance()
