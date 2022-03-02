@@ -37,7 +37,13 @@ fun ProductScreen(
                     onBackButtonClick = { navController.popBackStack() }
                 )
                 ProductOptions(
-                    onCartClick = {},
+                    onCartClick = {
+                        if (viewModel.loggedIn) {
+                            viewModel.addToCart()
+                            return@ProductOptions
+                        }
+                        navController.navigate(KleerenScreens.LoginScreen.route)
+                    },
                     onFavoriteClick = {
                         if (viewModel.loggedIn) {
                             viewModel.addToFavorites()

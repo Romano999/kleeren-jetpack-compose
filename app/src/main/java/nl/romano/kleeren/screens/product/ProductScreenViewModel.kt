@@ -30,6 +30,7 @@ class ProductScreenViewModel @Inject constructor(
     var loggedIn: Boolean by Delegates.notNull<Boolean>()
     var foundProduct: MutableState<MProduct?> = mutableStateOf(null)
     private var favoriteProduct: MutableState<MProduct?> = mutableStateOf(null)
+    private var cartProduct: MutableState<MProduct?> = mutableStateOf(null)
 
     init {
         viewModelScope.launch {
@@ -63,7 +64,6 @@ class ProductScreenViewModel @Inject constructor(
             productRef.whereEqualTo("id", productId.trim()).get()
                 .addOnSuccessListener { product ->
                     favoriteProduct = mutableStateOf(product.toObjects(MProduct::class.java).first())
-                    Log.d("User", "addToFavorites: ${favoriteProduct.value?.toMap()}")
                 }.continueWith {
                     usersRef.whereEqualTo("userId", userId).get()
                         .addOnSuccessListener {
@@ -79,12 +79,28 @@ class ProductScreenViewModel @Inject constructor(
 
     fun addToCart() {
         viewModelScope.launch {
-            if (auth.currentUser != null) {
+            if (auth.currentUser == null) {
+                Log.d("User", "addToCart: Not logged in!")
                 return@launch
             }
+
+            Log.d("User", "addToCart: Logged in!")
             val userId: String = auth.currentUser?.uid.toString()
-            // usersRef.document().
-            // .whereEqualTo("userId", userId.trim())
+            lateinit var documentId: String
+
+            productRef.whereEqualTo("id", productId.trim()).get()
+                .addOnSuccessListener { product ->
+                    cartProduct = mutableStateOf(product.toObjects(MProduct::class.java).first())
+                }.continueWith {
+                    usersRef.whereEqualTo("userId", userId).get()
+                        .addOnSuccessListener {
+                            documentId = it.documents[0].id
+                        }.continueWith {
+                            usersRef.document(documentId).update("shoppingCart", FieldValue.arrayUnion(cartProduct.value?.toMap()))
+                                .addOnSuccessListener {
+                                }
+                        }
+                }
         }
     }
 }
