@@ -19,15 +19,17 @@ import coil.transform.CircleCropTransformation
 import nl.romano.kleeren.model.MProduct
 
 @Composable
-fun ProductItems(products: List<MProduct>) {
+fun ProductItems(
+    products: List<MProduct>,
+    rowModifier: Modifier = Modifier
+        .padding(20.dp)
+        .fillMaxWidth()
+) {
     LazyColumn {
         items(products) { product ->
             Row(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth()
-                    .clickable {
-                    },
+                modifier = rowModifier
+                    .clickable { },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {

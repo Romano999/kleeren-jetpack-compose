@@ -21,6 +21,14 @@ class MProduct(
                 map["productUrl"] as String?
             )
         }
+
+        fun toProductList(map: List<Map<String, Any>>): List<MProduct> {
+            val products: ArrayList<MProduct> = ArrayList()
+
+            map.forEach { item -> products.add(this.toProduct(item)) }
+
+            return products
+        }
     }
 
     fun toMap(): MutableMap<String, Any> {
