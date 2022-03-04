@@ -29,9 +29,6 @@ class FavouriteScreenViewModel @Inject constructor() : ViewModel() {
             if (loggedIn) {
                 getFavourites()
             }
-            favouriteProducts.forEach {
-                Log.d("Favourite", "$it")
-            }
         }
     }
 
