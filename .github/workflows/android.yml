@@ -20,7 +20,9 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Create file
-      run: touch /home/runner/work/ikpmd_jetpack_compose/ikpmd_jetpack_compose/app/google-services.json | base64
+      run: |
+        mkdir /home/runner/work/ikpmd_jetpack_compose/ikpmd_jetpack_compose/app/google-services.json | base64
+        touch /home/runner/work/ikpmd_jetpack_compose/ikpmd_jetpack_compose/app/google-services.json | base64
     - name: Putting data
       env:
         DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
