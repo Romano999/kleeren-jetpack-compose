@@ -32,13 +32,18 @@ fun ShoppingCartScreen(
         }
     }) {
         Column {
-            ShoppingCartList(shoppingCartProducts)
+            ShoppingCartList(shoppingCartProducts) {
+                viewModel.placeOrder()
+            }
         }
     }
 }
 
 @Composable
-fun ShoppingCartList(products: List<MProduct>) {
+fun ShoppingCartList(
+    products: List<MProduct>,
+    onOrderButtonClick: () -> Unit
+) {
     Text(
         text = "Your shopping cart",
         fontSize = MaterialTheme.typography.caption.fontSize.times(3)
@@ -56,7 +61,7 @@ fun ShoppingCartList(products: List<MProduct>) {
         contentAlignment = Alignment.Center
     ) {
         RoundButton(
-            onClick = { },
+            onClick = onOrderButtonClick,
             text = "Place your order",
             backgroundColor = Green,
             modifier = Modifier

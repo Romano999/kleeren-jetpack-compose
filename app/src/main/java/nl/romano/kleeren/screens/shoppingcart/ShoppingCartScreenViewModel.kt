@@ -1,10 +1,11 @@
-package nl.romano.kleeren.screens.favourite
+package nl.romano.kleeren.screens.shoppingcart
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,11 +15,10 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
-class FavouriteScreenViewModel @Inject constructor() : ViewModel() {
+class ShoppingCartScreenViewModel @Inject constructor() : ViewModel() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val productRef = db.collection("products")
     private val usersRef = db.collection("users")
-    var favouriteProducts: MutableList<MProduct> = mutableListOf()
+    var shoppingCartProducts: MutableList<MProduct> = mutableListOf()
     private lateinit var auth: FirebaseAuth
     var loggedIn: Boolean by Delegates.notNull<Boolean>()
 
@@ -27,12 +27,12 @@ class FavouriteScreenViewModel @Inject constructor() : ViewModel() {
             auth = Firebase.auth
             loggedIn = auth.currentUser != null
             if (loggedIn) {
-                getFavourites()
+                getShoppingCart()
             }
         }
     }
 
-    private fun getFavourites() {
+    private fun getShoppingCart() {
         lateinit var documentId: String
         val userId: String = auth.currentUser?.uid.toString()
 
@@ -42,14 +42,25 @@ class FavouriteScreenViewModel @Inject constructor() : ViewModel() {
             }.continueWith {
                 usersRef.document(documentId).get()
                     .addOnSuccessListener { products ->
-                        Log.d("Favourite", "getFavourites: ${products.data?.get("favorites")}")
-                        val foundFavouriteProducts = products.data?.get("favorites") as ArrayList<HashMap<String, Any>>
-                        // Log.d("Favourite", "getFavourites: ${MProduct.toProductList(products.get("favorites") as List<Map<String, Any>>)}")
-                        foundFavouriteProducts.forEach { foundFavouriteProduct ->
-                            favouriteProducts.add(MProduct.toProduct(foundFavouriteProduct))
-                            // Log.d("Favourite", "getFavourites: $foundFavouriteProduct")
-                            // favouriteProducts.add(MProduct.toProduct(foundFavouriteProduct.data?.get("favorites")))
+                        val foundShoppingCartProducts = products.data?.get("shoppingCart") as ArrayList<HashMap<String, Any>>
+                        foundShoppingCartProducts.forEach { foundShoppingCartProduct ->
+                            shoppingCartProducts.add(MProduct.toProduct(foundShoppingCartProduct))
                         }
+                    }
+            }
+    }
+
+    fun placeOrder() {
+        lateinit var documentId: String
+        val userId: String = auth.currentUser?.uid.toString()
+
+        usersRef.whereEqualTo("userId", userId).get()
+            .addOnSuccessListener {
+                documentId = it.documents[0].id
+            }.continueWith {
+                usersRef.document(documentId).update("shoppingCart", FieldValue.arrayRemove())
+                    .addOnSuccessListener {
+                        Log.d("Shopping", "placeOrder: $it")
                     }
             }
     }
