@@ -21,47 +21,44 @@ class ShoppingCartScreenViewModel @Inject constructor() : ViewModel() {
     var shoppingCartProducts: MutableList<MProduct> = mutableListOf()
     private lateinit var auth: FirebaseAuth
     var loggedIn: Boolean by Delegates.notNull<Boolean>()
+    private lateinit var userId: String
+    private lateinit var documentId: String
 
     init {
         viewModelScope.launch {
             auth = Firebase.auth
             loggedIn = auth.currentUser != null
-            if (loggedIn) {
-                getShoppingCart()
-            }
+            userId = auth.currentUser?.uid.toString()
+            usersRef.whereEqualTo("userId", userId).get()
+                .addOnSuccessListener {
+                    documentId = it.documents[0].id
+                }.continueWith {
+                    if (loggedIn) {
+                        getShoppingCart()
+                    }
+                }
         }
     }
 
     private fun getShoppingCart() {
-        lateinit var documentId: String
-        val userId: String = auth.currentUser?.uid.toString()
+        val documentId: String = this.documentId
 
-        usersRef.whereEqualTo("userId", userId).get()
-            .addOnSuccessListener {
-                documentId = it.documents[0].id
-            }.continueWith {
-                usersRef.document(documentId).get()
-                    .addOnSuccessListener { products ->
-                        val foundShoppingCartProducts = products.data?.get("shoppingCart") as ArrayList<HashMap<String, Any>>
-                        foundShoppingCartProducts.forEach { foundShoppingCartProduct ->
-                            shoppingCartProducts.add(MProduct.toProduct(foundShoppingCartProduct))
-                        }
-                    }
+        usersRef.document(documentId).get()
+            .addOnSuccessListener { products ->
+                val foundShoppingCartProducts = products.data?.get("shoppingCart") as ArrayList<HashMap<String, Any>>
+                foundShoppingCartProducts.forEach { foundShoppingCartProduct ->
+                    shoppingCartProducts.add(MProduct.toProduct(foundShoppingCartProduct))
+                }
             }
     }
 
     fun placeOrder() {
-        lateinit var documentId: String
-        val userId: String = auth.currentUser?.uid.toString()
-
-        usersRef.whereEqualTo("userId", userId).get()
-            .addOnSuccessListener {
-                documentId = it.documents[0].id
-            }.continueWith {
-                usersRef.document(documentId).update("shoppingCart", FieldValue.arrayRemove())
-                    .addOnSuccessListener {
-                        Log.d("Shopping", "placeOrder: $it")
-                    }
-            }
+        viewModelScope.launch {
+            val documentId: String = documentId
+            usersRef.document(documentId).update("shoppingCart", FieldValue.arrayRemove())
+                .addOnSuccessListener {
+                    Log.d("Shopping", "placeOrder: $it")
+                }
+        }
     }
 }
