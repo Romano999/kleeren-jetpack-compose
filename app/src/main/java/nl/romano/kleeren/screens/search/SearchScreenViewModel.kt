@@ -40,5 +40,5 @@ class SearchScreenViewModel @Inject constructor(private val repository: UserSear
         }
     }
     fun addUserSearch(userSearch: UserSearch) = viewModelScope.launch { repository.insert(userSearch) }
-    fun deleteNote(userSearch: UserSearch) = viewModelScope.launch { repository.deleteNote(userSearch) }
+    fun delete(userSearch: UserSearch) = viewModelScope.launch { repository.delete(userSearch) }
 }

@@ -10,5 +10,5 @@ class UserSearchRepository @Inject constructor(private val userSearchDatabaseDao
     suspend fun getUserSearchById(id: String): UserSearch = userSearchDatabaseDao.getUserSearchById(id)
     suspend fun insert(userSearch: UserSearch) = userSearchDatabaseDao.insert(userSearch)
     suspend fun deleteAll() = userSearchDatabaseDao.deleteAll()
-    suspend fun deleteNote(userSearch: UserSearch) = userSearchDatabaseDao.deleteNote(userSearch)
+    suspend fun delete(userSearch: UserSearch) = userSearchDatabaseDao.deleteNote(userSearch)
 }

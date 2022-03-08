@@ -1,5 +1,6 @@
 package nl.romano.kleeren.screens.createaccount
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,12 +45,20 @@ fun CreateAccountScreen(
     navController: NavController = rememberNavController(),
     viewModel: CreateAccountScreenViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val emailInput = rememberSaveable {
         mutableStateOf("")
     }
 
     val passwordInput = rememberSaveable {
         mutableStateOf("")
+    }
+
+    val onSubmit: (UserCredentials) -> Unit = { userCredentials ->
+        Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
+        viewModel.createUserWithEmailAndPassword(userCredentials) {
+            navController.popBackStack()
+        }
     }
 
     /*
@@ -75,11 +85,7 @@ fun CreateAccountScreen(
                     emailInput,
                     passwordInput,
                     navController,
-                    onSubmit = { usercredentials ->
-                        viewModel.createUserWithEmailAndPassword(usercredentials) {
-                            navController.popBackStack()
-                        }
-                    }
+                    onSubmit
                 )
             }
         }

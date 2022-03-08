@@ -41,8 +41,8 @@ fun SearchScreen(
             if (foundProducts.isEmpty() || searchTerm.value == "") {
                 UserSearchEntries(
                     userSearches,
-                    onIconClick = { userSearch -> viewModel.deleteNote(userSearch) },
-                    onRowClick = { userSearch -> { } }
+                    onIconClick = { userSearch -> viewModel.delete(userSearch) },
+                    onRowClick = { userSearch -> searchTerm.value = userSearch.searchTerm }
                 )
             }
 

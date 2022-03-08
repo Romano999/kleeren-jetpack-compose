@@ -49,6 +49,12 @@ fun LoginScreen(
         mutableStateOf("")
     }
 
+    val onSubmit: (UserCredentials) -> Unit = { userCredentials ->
+        viewModel.signInWithEmailAndPassword(userCredentials) {
+            navController.popBackStack()
+        }
+    }
+
     /*
     val validForm = remember {
         emailInput.value.trim().isNotEmpty() && passwordInput.value.trim().isNotEmpty()
@@ -73,11 +79,7 @@ fun LoginScreen(
                     emailInput,
                     passwordInput,
                     navController,
-                    onSubmit = { usercredentials ->
-                        viewModel.signInWithEmailAndPassword(usercredentials) {
-                            navController.popBackStack()
-                        }
-                    }
+                    onSubmit
                 )
             }
         }
