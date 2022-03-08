@@ -28,15 +28,17 @@ class ShoppingCartScreenViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             auth = Firebase.auth
             loggedIn = auth.currentUser != null
-            userId = auth.currentUser?.uid.toString()
-            usersRef.whereEqualTo("userId", userId).get()
-                .addOnSuccessListener {
-                    documentId = it.documents[0].id
-                }.continueWith {
-                    if (loggedIn) {
-                        getShoppingCart()
+            if (loggedIn) {
+                userId = auth.currentUser?.uid.toString()
+                usersRef.whereEqualTo("userId", userId).get()
+                    .addOnSuccessListener {
+                        documentId = it.documents[0].id
+                    }.continueWith {
+                        if (loggedIn) {
+                            getShoppingCart()
+                        }
                     }
-                }
+            }
         }
     }
 
