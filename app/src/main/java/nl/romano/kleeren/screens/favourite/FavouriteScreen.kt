@@ -6,13 +6,18 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import nl.romano.kleeren.component.BottomNavigationBar
 import nl.romano.kleeren.component.ProductItems
+import nl.romano.kleeren.component.RoundButton
 import nl.romano.kleeren.model.MProduct
+import nl.romano.kleeren.navigation.KleerenScreens
+import nl.romano.kleeren.ui.theme.Green
 
 @Composable
 fun FavouriteScreen(
@@ -20,6 +25,12 @@ fun FavouriteScreen(
     viewModel: FavouriteScreenViewModel = hiltViewModel()
 ) {
     val favouriteProducts = viewModel.favouriteProducts
+    val loggedIn = viewModel.loggedIn
+
+    val onSignInButtonClick: () -> Unit = {
+        navController.navigate(KleerenScreens.LoginScreen.route)
+    }
+
     Scaffold(bottomBar = {
         BottomAppBar(
             elevation = 5.dp
@@ -27,20 +38,60 @@ fun FavouriteScreen(
             BottomNavigationBar(navController = navController)
         }
     }) {
-        Column {
-            FavouriteList(favouriteProducts)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Your favorites",
+                fontSize = MaterialTheme.typography.caption.fontSize.times(3)
+            )
+            if (loggedIn) {
+                FavouriteList(favouriteProducts)
+            } else {
+                NotLoggedInScreen(
+                    onSignInButtonClick
+                )
+            }
         }
     }
 }
 
 @Composable
 fun FavouriteList(products: List<MProduct>) {
-    Text(
-        text = "Your favorites",
-        fontSize = MaterialTheme.typography.caption.fontSize.times(3)
-    )
     ProductItems(
         products,
         rowModifier = Modifier.padding(10.dp).fillMaxWidth()
     )
+}
+
+@Composable
+fun NotLoggedInScreen(onSignInButtonClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.92f),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "You are currently not logged in.",
+                fontSize = MaterialTheme.typography.caption.fontSize.times(1.5)
+            )
+            Text(
+                text = "Log in to see your favourites list.",
+                fontStyle = FontStyle.Italic
+            )
+            RoundButton(
+                onClick = onSignInButtonClick,
+                text = "Login in",
+                backgroundColor = Green,
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .padding(top = 20.dp)
+            )
+        }
+    }
 }
