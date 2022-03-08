@@ -26,12 +26,12 @@ class LoginScreenViewModel @Inject constructor() : ViewModel() {
                 val password: String = userCredentials.password.trim()
 
                 auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.d("Login", "task: ${task.result}")
+                    .addOnSuccessListener { task ->
+                        if (task.user != null) {
+                            Log.d("Login", "task: $task")
                             navigate()
                         } else {
-                            Log.d("Login", "task failed: ${task.result}")
+                            Log.d("Login", "task failed: $task")
                         }
                     }
                     .addOnFailureListener { task ->
