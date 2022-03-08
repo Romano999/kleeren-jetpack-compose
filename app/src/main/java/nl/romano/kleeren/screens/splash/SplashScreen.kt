@@ -53,7 +53,7 @@ fun SplashScreen(navController: NavController) {
 fun Splash(alpha: Float) {
     Box(
         modifier = Modifier
-            .background(if (isSystemInDarkTheme()) LightGreen else DarkGreen)
+            .background(if (!isSystemInDarkTheme()) LightGreen else DarkGreen)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
