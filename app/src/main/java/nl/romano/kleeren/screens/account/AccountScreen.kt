@@ -51,7 +51,7 @@ fun AccountScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Your Account",
+                text = "Your account",
                 fontSize = MaterialTheme.typography.caption.fontSize.times(3)
             )
             if (loggedIn) {

@@ -50,7 +50,10 @@ class ProductScreenViewModel @Inject constructor(
             }
     }
 
-    fun addToFavorites() {
+    fun addToFavorites(
+        onSuccessAction: (MProduct) -> Unit,
+        onFailureAction: () -> Unit
+    ) {
         viewModelScope.launch {
             if (auth.currentUser == null) {
                 return@launch
@@ -58,11 +61,19 @@ class ProductScreenViewModel @Inject constructor(
 
             val userId: String = auth.currentUser?.uid.toString()
             val updateField = "favorites"
-            addProductToFirebaseArr(userId, updateField)
+            addProductToFirebaseArr(
+                userId,
+                updateField,
+                onSuccessAction,
+                onFailureAction
+            )
         }
     }
 
-    fun addToCart() {
+    fun addToCart(
+        onSuccessAction: (MProduct) -> Unit,
+        onFailureAction: () -> Unit
+    ) {
         viewModelScope.launch {
             if (auth.currentUser == null) {
                 return@launch
@@ -70,11 +81,21 @@ class ProductScreenViewModel @Inject constructor(
 
             val userId: String = auth.currentUser?.uid.toString()
             val updateField = "shoppingCart"
-            addProductToFirebaseArr(userId, updateField)
+            addProductToFirebaseArr(
+                userId,
+                updateField,
+                onSuccessAction,
+                onFailureAction
+            )
         }
     }
 
-    fun addProductToFirebaseArr(userId: String, updateField: String) {
+    private fun addProductToFirebaseArr(
+        userId: String,
+        updateField: String,
+        onSuccessAction: (MProduct) -> Unit,
+        onFailureAction: () -> Unit
+    ) {
         lateinit var documentId: String
         productRef.whereEqualTo("id", productId.trim()).get()
             .addOnSuccessListener { product ->
@@ -86,6 +107,13 @@ class ProductScreenViewModel @Inject constructor(
                     }.continueWith {
                         usersRef.document(documentId).update(updateField, FieldValue.arrayUnion(cartProduct.value?.toMap()))
                             .addOnSuccessListener {
+                                if (cartProduct.value != null) {
+                                    onSuccessAction.invoke(cartProduct.value!!)
+                                }
+                                Log.d("Product", "addProductToFirebaseArr: Done")
+                            }.addOnFailureListener {
+                                onFailureAction.invoke()
+                                Log.d("Product", "addProductToFirebaseArr: Failed")
                             }
                     }
             }

@@ -19,7 +19,11 @@ class LoginScreenViewModel @Inject constructor() : ViewModel() {
     // private val _loading = MutableLiveData(false)
     // private val loading: LiveData<Boolean> = _loading
 
-    fun signInWithEmailAndPassword(userCredentials: UserCredentials, navigate: () -> Unit) =
+    fun signInWithEmailAndPassword(
+        userCredentials: UserCredentials,
+        onSuccessAction: () -> Unit,
+        onFailureAction: (Exception) -> Unit
+    ) =
         viewModelScope.launch {
             try {
                 val email: String = userCredentials.email.trim()
@@ -29,16 +33,14 @@ class LoginScreenViewModel @Inject constructor() : ViewModel() {
                     .addOnSuccessListener { task ->
                         if (task.user != null) {
                             Log.d("Login", "task: $task")
-                            navigate()
+                            onSuccessAction()
                         } else {
                             Log.d("Login", "task failed: $task")
                         }
                     }
-                    .addOnFailureListener { task ->
-                        Log.d("Login", "task failed: ${task.message}")
-                    }
-                    .addOnCanceledListener {
-                        Log.d("Login", "signInWithEmailAndPassword: Cancelled")
+                    .addOnFailureListener { exception ->
+                        Log.d("Login", "task failed: ${exception.message}")
+                        onFailureAction(exception)
                     }
             } catch (exception: Exception) {
                 Log.d("Login", "signInWithEmailAndPassword: $exception")

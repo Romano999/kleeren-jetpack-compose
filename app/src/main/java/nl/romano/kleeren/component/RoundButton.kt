@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.* // ktlint-disable no-wildcard-imports
 
 @Composable
@@ -25,6 +26,7 @@ fun RoundButton(
     textColor: Color = Color.White,
     textFontWeight: FontWeight = FontWeight.Bold,
     textFontSize: TextUnit = 18.sp,
+    textAlign: TextAlign = TextAlign.Center,
     enabled: Boolean = true
 ) {
     Button(
@@ -42,7 +44,8 @@ fun RoundButton(
             text = text,
             color = textColor,
             fontWeight = textFontWeight,
-            fontSize = textFontSize
+            fontSize = textFontSize,
+            textAlign = textAlign
         )
     }
 }

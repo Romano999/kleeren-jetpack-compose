@@ -1,5 +1,7 @@
 package nl.romano.kleeren.screens.login
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +23,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -41,25 +45,36 @@ fun LoginScreen(
     navController: NavController,
     viewModel: LoginScreenViewModel = hiltViewModel()
 ) {
-    val emailInput = rememberSaveable {
+    val context: Context = LocalContext.current
+
+    val emailInput: MutableState<String> = rememberSaveable {
         mutableStateOf("")
     }
 
-    val passwordInput = rememberSaveable {
+    val passwordInput: MutableState<String> = rememberSaveable {
         mutableStateOf("")
     }
 
-    val onSubmit: (UserCredentials) -> Unit = { userCredentials ->
-        viewModel.signInWithEmailAndPassword(userCredentials) {
-            navController.popBackStack()
+    val onLoginButtonCLick: (UserCredentials) -> Unit = { userCredentials ->
+        if (emailInput.value.isEmpty() || passwordInput.value.isEmpty()) {
+            Toast.makeText(context, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.signInWithEmailAndPassword(
+                userCredentials,
+                onSuccessAction = {
+                    Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                },
+                onFailureAction = {
+                    Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
-    /*
-    val validForm = remember {
-        emailInput.value.trim().isNotEmpty() && passwordInput.value.trim().isNotEmpty()
+    val onRegisterButtonCLick: () -> Unit = {
+        navController.navigate(KleerenScreens.CreateAccountScreen.route)
     }
-    */
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -78,8 +93,8 @@ fun LoginScreen(
                 LoginForm(
                     emailInput,
                     passwordInput,
-                    navController,
-                    onSubmit
+                    onLoginButtonCLick,
+                    onRegisterButtonCLick
                 )
             }
         }
@@ -114,11 +129,11 @@ fun LoginHeader() {
 fun LoginForm(
     emailInput: MutableState<String>,
     passwordInput: MutableState<String>,
-    navController: NavController,
-    onSubmit: (UserCredentials) -> Unit = { }
+    onLoginButtonClick: (UserCredentials) -> Unit,
+    onRegisterButtonClick: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val passwordFocus = FocusRequester.Default
+    val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
+    val passwordFocus: FocusRequester = FocusRequester.Default
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -151,11 +166,8 @@ fun LoginForm(
         Spacer(modifier = Modifier.fillMaxHeight(0.3f))
         RoundButton(
             onClick = {
-                onSubmit(
-                    UserCredentials(
-                        emailInput.value.trim(),
-                        passwordInput.value.trim()
-                    )
+                onLoginButtonClick(
+                    UserCredentials(emailInput.value.trim(), passwordInput.value.trim())
                 )
                 keyboardController?.hide()
             },
@@ -164,7 +176,7 @@ fun LoginForm(
             contentPadding = PaddingValues(15.dp),
         )
         RoundButton(
-            onClick = { navController.navigate(KleerenScreens.CreateAccountScreen.route) },
+            onClick = onRegisterButtonClick,
             text = "Register",
             backgroundColor = Color.LightGray,
             contentPadding = PaddingValues(15.dp),
