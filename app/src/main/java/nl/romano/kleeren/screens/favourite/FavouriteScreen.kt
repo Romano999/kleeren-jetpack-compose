@@ -31,6 +31,10 @@ fun FavouriteScreen(
         navController.navigate(KleerenScreens.LoginScreen.route)
     }
 
+    val onItemClick: (MProduct) -> Unit = { product ->
+        navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+    }
+
     Scaffold(bottomBar = {
         BottomAppBar(
             elevation = 5.dp
@@ -39,6 +43,7 @@ fun FavouriteScreen(
         }
     }) {
         Column(
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -46,7 +51,10 @@ fun FavouriteScreen(
                 fontSize = MaterialTheme.typography.caption.fontSize.times(3)
             )
             if (loggedIn) {
-                FavouriteList(favouriteProducts)
+                FavouriteList(
+                    favouriteProducts,
+                    onItemClick
+                )
             } else {
                 NotLoggedInScreen(
                     onSignInButtonClick
@@ -57,10 +65,14 @@ fun FavouriteScreen(
 }
 
 @Composable
-fun FavouriteList(products: List<MProduct>) {
+fun FavouriteList(
+    products: List<MProduct>,
+    onItemClick: (MProduct) -> Unit
+) {
     ProductItems(
         products,
-        rowModifier = Modifier.padding(10.dp).fillMaxWidth()
+        rowModifier = Modifier.padding(10.dp).fillMaxWidth(),
+        onItemClick
     )
 }
 

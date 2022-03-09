@@ -28,6 +28,10 @@ fun ShoppingCartScreen(
         navController.navigate(KleerenScreens.LoginScreen.route)
     }
 
+    val onItemClick: (MProduct) -> Unit = { product ->
+        navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+    }
+
     Scaffold(bottomBar = {
         BottomAppBar(
             elevation = 5.dp
@@ -44,9 +48,11 @@ fun ShoppingCartScreen(
             )
             if (loggedIn) {
                 Column {
-                    ShoppingCartList(shoppingCartProducts) {
-                        viewModel.placeOrder()
-                    }
+                    ShoppingCartList(
+                        products = shoppingCartProducts,
+                        onOrderButtonClick = { viewModel.placeOrder() },
+                        onItemClick = onItemClick
+                    )
                 }
             } else {
                 NotLoggedInScreen(
@@ -60,13 +66,15 @@ fun ShoppingCartScreen(
 @Composable
 fun ShoppingCartList(
     products: List<MProduct>,
-    onOrderButtonClick: () -> Unit
+    onOrderButtonClick: () -> Unit,
+    onItemClick: (MProduct) -> Unit
 ) {
     ProductItems(
         products,
         rowModifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        onItemClick
     )
 
     Box(

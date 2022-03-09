@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import nl.romano.kleeren.component.* // ktlint-disable no-wildcard-imports
+import nl.romano.kleeren.model.MProduct
 import nl.romano.kleeren.model.UserSearch
+import nl.romano.kleeren.navigation.KleerenScreens
 import nl.romano.kleeren.ui.theme.Green
 
 @Composable
@@ -25,12 +27,16 @@ fun SearchScreen(
     navController: NavController,
     viewModel: SearchScreenViewModel = hiltViewModel()
 ) {
+    val userSearches = viewModel.userSearchList.collectAsState().value
+    val foundProducts = viewModel.foundProducts.collectAsState().value
+
     val searchTerm = rememberSaveable {
         mutableStateOf("")
     }
 
-    val userSearches = viewModel.userSearchList.collectAsState().value
-    val foundProducts = viewModel.foundProducts.collectAsState().value
+    val onItemClick: (MProduct) -> Unit = { product ->
+        navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+    }
 
     Scaffold(
         bottomBar = {
@@ -64,7 +70,10 @@ fun SearchScreen(
                     .fillMaxWidth(0.7f)
                     .padding(top = 20.dp)
             )
-            ProductItems(foundProducts)
+            ProductItems(
+                products = foundProducts,
+                onItemClick = onItemClick
+            )
         }
     }
 }

@@ -23,13 +23,14 @@ fun ProductItems(
     products: List<MProduct>,
     rowModifier: Modifier = Modifier
         .padding(20.dp)
-        .fillMaxWidth()
+        .fillMaxWidth(),
+    onItemClick: (MProduct) -> Unit
 ) {
     LazyColumn {
         items(products) { product ->
             Row(
                 modifier = rowModifier
-                    .clickable { },
+                    .clickable { onItemClick.invoke(product) },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
