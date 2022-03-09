@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.* // ktlint-disable no-wildcard-imports
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import nl.romano.kleeren.R
 import nl.romano.kleeren.component.BottomNavigationBar
+import nl.romano.kleeren.component.CircularLoadingIndicator
 import nl.romano.kleeren.component.ProductsRow
 import nl.romano.kleeren.component.RoundButton
 import nl.romano.kleeren.model.MProduct
@@ -30,10 +28,17 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val salesProducts = viewModel.salesProducts
-    val arrivalProducts = viewModel.arrivalsProducts
+    val onSearchButtonClick: () -> Unit = {
+        navController.navigate(KleerenScreens.SearchScreen.route)
+    }
 
-    // content()
+    val onCardClick: (MProduct) -> Unit = { product ->
+        navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+    }
+
+    val salesProducts: MutableList<MProduct> = viewModel.salesProducts
+    val arrivalProducts: MutableList<MProduct> = viewModel.arrivalsProducts
+
     Scaffold(bottomBar = {
         BottomAppBar(
             elevation = 5.dp
@@ -49,11 +54,20 @@ fun HomeScreen(
                 )
                 .padding(bottom = 100.dp)
         ) {
-            HomeScreenHeader()
+            HomeScreenHeader(onSearchButtonClick)
             Spacer(modifier = Modifier.height(50.dp))
-            SalesRow(salesProducts, navController)
-            Spacer(modifier = Modifier.height(50.dp))
-            ArrivalsRow(arrivalProducts, navController)
+            if (salesProducts.isEmpty() || arrivalProducts.isEmpty()) {
+                CircularLoadingIndicator(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .size(160.dp)
+                        .padding(top = 50.dp)
+                )
+            } else {
+                SalesRow(salesProducts, onCardClick)
+                Spacer(modifier = Modifier.height(50.dp))
+                ArrivalsRow(arrivalProducts, onCardClick)
+            }
         }
     }
 }
@@ -61,33 +75,31 @@ fun HomeScreen(
 @Composable
 fun SalesRow(
     products: List<MProduct>,
-    navController: NavController
+    onSalesCardClick: (MProduct) -> Unit
 ) {
     ProductsRow(
         title = "Sales",
         products = products,
-        onCardClick = { product ->
-            navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
-        }
+        onCardClick = onSalesCardClick
     )
 }
 
 @Composable
 fun ArrivalsRow(
     products: List<MProduct>,
-    navController: NavController
+    onArrivalCardClick: (MProduct) -> Unit
 ) {
     ProductsRow(
         "New Arrivals",
         products = products,
-        onCardClick = { product ->
-            navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
-        }
+        onCardClick = onArrivalCardClick
     )
 }
 
 @Composable
-fun HomeScreenHeader() {
+fun HomeScreenHeader(
+    onSearchButtonClick: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -110,7 +122,7 @@ fun HomeScreenHeader() {
             )
 
             RoundButton(
-                onClick = { },
+                onClick = onSearchButtonClick,
                 text = "Search",
                 backgroundColor = Green,
                 modifier = Modifier
