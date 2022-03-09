@@ -1,5 +1,6 @@
 package nl.romano.kleeren.screens.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,22 +21,25 @@ class SearchScreenViewModel @Inject constructor(private val repository: UserSear
     val userSearchList = _userSearch.asStateFlow()
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val productRef = db.collection("products")
-    var foundProducts: MutableList<MProduct> = mutableListOf()
+    private var _foundProducts = MutableStateFlow<List<MProduct>>(emptyList())
+    var foundProducts = _foundProducts.asStateFlow()
 
     init {
         viewModelScope.launch {
-            repository.deleteAll()
             repository.getUserSearches().distinctUntilChanged().collect { listOfUserSearches ->
                 _userSearch.value = listOfUserSearches
             }
         }
     }
 
-    fun searchProducts(userSearch: UserSearch) = viewModelScope.launch {
-        productRef.whereGreaterThanOrEqualTo("name", userSearch.searchTerm).get().addOnSuccessListener { products ->
-            products.documents.forEach { product ->
-                val foundProduct = MProduct.toProduct(product.data!!)
-                foundProducts.add(foundProduct)
+    fun searchProducts(userSearch: UserSearch) {
+        viewModelScope.launch {
+            productRef.whereGreaterThanOrEqualTo("name", userSearch.searchTerm).get().addOnSuccessListener { products ->
+                _foundProducts.value = products.toObjects(MProduct::class.java)
+                Log.d("Product", "searchProducts: Product found")
+                Log.d("Product", "searchProducts: Product list size: $foundProducts")
+            }.addOnCanceledListener {
+                Log.d("Product", "searchProducts: Product cancelled!")
             }
         }
     }
