@@ -50,7 +50,8 @@ class ProductScreenViewModel @Inject constructor(
             }
     }
 
-    fun addToFavorites(
+    fun addToFirebaseProductList(
+        updateField: String,
         onSuccessAction: (MProduct) -> Unit,
         onFailureAction: () -> Unit
     ) {
@@ -60,27 +61,6 @@ class ProductScreenViewModel @Inject constructor(
             }
 
             val userId: String = auth.currentUser?.uid.toString()
-            val updateField = "favorites"
-            addProductToFirebaseArr(
-                userId,
-                updateField,
-                onSuccessAction,
-                onFailureAction
-            )
-        }
-    }
-
-    fun addToCart(
-        onSuccessAction: (MProduct) -> Unit,
-        onFailureAction: () -> Unit
-    ) {
-        viewModelScope.launch {
-            if (auth.currentUser == null) {
-                return@launch
-            }
-
-            val userId: String = auth.currentUser?.uid.toString()
-            val updateField = "shoppingCart"
             addProductToFirebaseArr(
                 userId,
                 updateField,
