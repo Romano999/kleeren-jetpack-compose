@@ -60,7 +60,7 @@ class InitializeFirestore {
         arrivalsRef.get()
             .addOnSuccessListener {
                 if (it.isEmpty) {
-                    for (i in 4..8) {
+                    for (i in 6..11) {
                         db.collection("arrivals").document().set(products[i].toMap())
                     }
                 }

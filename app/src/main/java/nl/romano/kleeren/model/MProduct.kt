@@ -1,15 +1,16 @@
 package nl.romano.kleeren.model
 
+import java.math.RoundingMode
 import java.util.UUID
 
 class MProduct(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val description: String,
-    val price: Long,
+    val price: Double,
     val productUrl: String?
 ) {
-    constructor() : this("", "", "", 0, "")
+    constructor() : this("", "", "", 0.0, "")
 
     companion object {
         fun toProduct(map: Map<String, Any>): MProduct {
@@ -17,7 +18,7 @@ class MProduct(
                 map["id"].toString(),
                 map["name"].toString(),
                 map["description"].toString(),
-                map["price"] as Long,
+                map["price"] as Double,
                 map["productUrl"] as String?
             )
         }
@@ -36,7 +37,7 @@ class MProduct(
             "id" to id,
             "name" to name,
             "description" to description,
-            "price" to price,
+            "price" to price.toBigDecimal().setScale(2, RoundingMode.UNNECESSARY).toDouble(),
             "productUrl" to productUrl.toString()
         )
     }
