@@ -9,8 +9,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import nl.romano.kleeren.component.AccountProductItems
 import nl.romano.kleeren.component.BottomNavigationBar
-import nl.romano.kleeren.component.ProductItems
 import nl.romano.kleeren.component.RoundButton
 import nl.romano.kleeren.model.MProduct
 import nl.romano.kleeren.navigation.KleerenScreens
@@ -32,6 +32,16 @@ fun ShoppingCartScreen(
         navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
     }
 
+    val onDeleteClick: (MProduct) -> Unit = { product ->
+        viewModel.deleteProduct(product)
+        viewModel.getShoppingCart()
+    }
+
+    val onOrderButtonClick: () -> Unit = {
+        viewModel.placeOrder()
+        viewModel.getShoppingCart()
+    }
+
     Scaffold(bottomBar = {
         BottomAppBar(
             elevation = 5.dp
@@ -50,8 +60,9 @@ fun ShoppingCartScreen(
                 Column {
                     ShoppingCartList(
                         products = shoppingCartProducts,
-                        onOrderButtonClick = { viewModel.placeOrder() },
-                        onItemClick = onItemClick
+                        onOrderButtonClick = onOrderButtonClick,
+                        onItemClick = onItemClick,
+                        onDeleteClick = onDeleteClick
                     )
                 }
             } else {
@@ -67,14 +78,15 @@ fun ShoppingCartScreen(
 fun ShoppingCartList(
     products: List<MProduct>,
     onOrderButtonClick: () -> Unit,
-    onItemClick: (MProduct) -> Unit
+    onItemClick: (MProduct) -> Unit,
+    onDeleteClick: (MProduct) -> Unit
 ) {
-    ProductItems(
+    AccountProductItems(
         products,
-        rowModifier = Modifier
-            .padding(10.dp)
+        rowModifier = Modifier.padding(10.dp)
             .fillMaxWidth(),
-        onItemClick
+        onItemClick,
+        onDeleteClick
     )
 
     Box(

@@ -29,7 +29,6 @@ class ProductScreenViewModel @Inject constructor(
     private lateinit var auth: FirebaseAuth
     var loggedIn: Boolean by Delegates.notNull<Boolean>()
     var foundProduct: MutableState<MProduct?> = mutableStateOf(null)
-    private var favoriteProduct: MutableState<MProduct?> = mutableStateOf(null)
     private var cartProduct: MutableState<MProduct?> = mutableStateOf(null)
 
     init {

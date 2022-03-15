@@ -70,7 +70,7 @@ fun ProductScreen(
                     onCartClick = {
                         if (viewModel.loggedIn) {
                             viewModel.addToFirebaseProductList(
-                                "favorites",
+                                "shoppingCart",
                                 onSuccessAction,
                                 onFailureAction
                             )
@@ -81,7 +81,7 @@ fun ProductScreen(
                     onFavoriteClick = {
                         if (viewModel.loggedIn) {
                             viewModel.addToFirebaseProductList(
-                                "shoppingCart",
+                                "favorites",
                                 onSuccessAction,
                                 onFailureAction
                             )

@@ -12,9 +12,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import nl.romano.kleeren.component.BottomNavigationBar
-import nl.romano.kleeren.component.ProductItems
-import nl.romano.kleeren.component.RoundButton
+import nl.romano.kleeren.component.* // ktlint-disable no-wildcard-imports
 import nl.romano.kleeren.model.MProduct
 import nl.romano.kleeren.navigation.KleerenScreens
 import nl.romano.kleeren.ui.theme.Green
@@ -24,8 +22,9 @@ fun FavouriteScreen(
     navController: NavController,
     viewModel: FavouriteScreenViewModel = hiltViewModel()
 ) {
-    val favouriteProducts = viewModel.favouriteProducts
+    val favouriteProducts = viewModel.favouriteProducts.toMutableList()
     val loggedIn = viewModel.loggedIn
+    val deletingProduct = viewModel.deletingProduct.value
 
     val onSignInButtonClick: () -> Unit = {
         navController.navigate(KleerenScreens.LoginScreen.route)
@@ -33,6 +32,11 @@ fun FavouriteScreen(
 
     val onItemClick: (MProduct) -> Unit = { product ->
         navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
+    }
+
+    val onDeleteClick: (MProduct) -> Unit = { product ->
+        viewModel.deleteProduct(product)
+        viewModel.getFavourites()
     }
 
     Scaffold(bottomBar = {
@@ -53,7 +57,8 @@ fun FavouriteScreen(
             if (loggedIn) {
                 FavouriteList(
                     favouriteProducts,
-                    onItemClick
+                    onItemClick,
+                    onDeleteClick
                 )
             } else {
                 NotLoggedInScreen(
@@ -66,13 +71,17 @@ fun FavouriteScreen(
 
 @Composable
 fun FavouriteList(
-    products: List<MProduct>,
-    onItemClick: (MProduct) -> Unit
+    products: MutableList<MProduct>,
+    onItemClick: (MProduct) -> Unit,
+    onDeleteClick: (MProduct) -> Unit
 ) {
-    ProductItems(
+    AccountProductItems(
         products,
-        rowModifier = Modifier.padding(10.dp).fillMaxWidth(),
-        onItemClick
+        rowModifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        onItemClick,
+        onDeleteClick
     )
 }
 

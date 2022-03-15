@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -66,11 +67,12 @@ fun UserSearchEntries(
                     fontSize = MaterialTheme.typography.caption.fontSize.times(1.5),
                     fontWeight = FontWeight.Bold
                 )
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Delete",
-                    modifier = Modifier.clickable { onIconClick(userSearch) }
-                )
+                IconButton(onClick = { onIconClick(userSearch) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Delete",
+                    )
+                }
             }
         }
     }
