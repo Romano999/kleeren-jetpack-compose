@@ -56,7 +56,6 @@ fun AccountScreen(
             )
             if (loggedIn) {
                 LoggedInScreen(
-                    user?.displayName,
                     onSignOutButtonClick
                 )
             } else {
@@ -70,11 +69,9 @@ fun AccountScreen(
 
 @Composable
 fun LoggedInScreen(
-    username: String?,
     onSignOutButtonClick: () -> Unit
 ) {
     Column {
-        Text(text = "Welcome $username")
         SignOutButton {
             onSignOutButtonClick.invoke()
         }

@@ -2,7 +2,6 @@ package nl.romano.kleeren.screens.product
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.material.* // ktlint-disable no-wildcard-imports
@@ -11,15 +10,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import nl.romano.kleeren.component.BottomNavigationBar
 import nl.romano.kleeren.component.CircularLoadingIndicator
 import nl.romano.kleeren.component.RoundButton
@@ -105,11 +106,9 @@ fun ProductScreen(
 fun BackButton(
     onBackButtonClick: () -> Unit
 ) {
-    Button(
+    IconButton(
         onClick = { onBackButtonClick() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-        modifier = Modifier.size(70.dp),
-        border = BorderStroke(0.dp, Color.Transparent)
+        modifier = Modifier.size(50.dp),
     ) {
         Icon(
             imageVector = Icons.Default.ArrowBack,
@@ -138,7 +137,7 @@ fun ProductDetails(
             painter = rememberImagePainter(
                 data = product.productUrl.toString(),
                 builder = {
-                    // transformations(CircleCropTransformation())
+                    transformations(CircleCropTransformation())
                 }
             ),
             contentScale = ContentScale.FillBounds,
@@ -146,8 +145,22 @@ fun ProductDetails(
             modifier = Modifier.size(220.dp)
         )
 
-        Text(text = "€${product.price}")
-        Text(text = product.description)
+        Text(
+            text = "€${product.price}",
+            color = Green,
+            fontSize = MaterialTheme.typography.caption.fontSize.times(2.2),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(
+                    bottom = 5.dp,
+                    start = 5.dp
+                )
+        )
+        Text(
+            text = product.description,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
 
