@@ -1,5 +1,7 @@
 package nl.romano.kleeren.screens.createaccount
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,11 +23,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -40,21 +45,37 @@ import nl.romano.kleeren.ui.theme.Green
 @Composable
 fun CreateAccountScreen(
     navController: NavController = rememberNavController(),
-    viewModel: CreateAccountScreenViewModel = viewModel()
+    viewModel: CreateAccountScreenViewModel = hiltViewModel()
 ) {
-    val emailInput = rememberSaveable {
+    val context: Context = LocalContext.current
+    val emailInput: MutableState<String> = rememberSaveable {
         mutableStateOf("")
     }
 
-    val passwordInput = rememberSaveable {
+    val passwordInput: MutableState<String> = rememberSaveable {
         mutableStateOf("")
     }
 
-    /*
-    val validForm = remember {
-        emailInput.value.trim().isNotEmpty() && passwordInput.value.trim().isNotEmpty()
+    val onBackButtonClick: () -> Unit = {
+        navController.popBackStack()
     }
-    */
+
+    val onCreateButtonClick: (UserCredentials) -> Unit = { userCredentials ->
+        if (emailInput.value.isEmpty() || passwordInput.value.isEmpty()) {
+            Toast.makeText(context, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.createUserWithEmailAndPassword(
+                userCredentials,
+                onSuccessAction = {
+                    Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                },
+                onFailureAction = { exception ->
+                    Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -73,12 +94,8 @@ fun CreateAccountScreen(
                 CreateAccountForm(
                     emailInput,
                     passwordInput,
-                    navController,
-                    onSubmit = { usercredentials ->
-                        viewModel.createUserWithEmailAndPassword(usercredentials) {
-                            navController.popBackStack()
-                        }
-                    }
+                    onCreateButtonClick,
+                    onBackButtonClick
                 )
             }
         }
@@ -107,11 +124,11 @@ fun CreateAccountHeader() {
 fun CreateAccountForm(
     emailInput: MutableState<String>,
     passwordInput: MutableState<String>,
-    navController: NavController,
-    onSubmit: (UserCredentials) -> Unit = { }
+    onCreateButtonClick: (UserCredentials) -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val passwordFocus = FocusRequester.Default
+    val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
+    val passwordFocus: FocusRequester = FocusRequester.Default
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -144,7 +161,7 @@ fun CreateAccountForm(
         Spacer(modifier = Modifier.fillMaxHeight(0.3f))
         RoundButton(
             onClick = {
-                onSubmit(
+                onCreateButtonClick(
                     UserCredentials(
                         emailInput.value.trim(),
                         passwordInput.value.trim()
@@ -157,7 +174,7 @@ fun CreateAccountForm(
             contentPadding = PaddingValues(15.dp),
         )
         RoundButton(
-            onClick = { navController.popBackStack() },
+            onClick = onBackButtonClick,
             text = "Back",
             backgroundColor = Color.LightGray,
             contentPadding = PaddingValues(15.dp),
