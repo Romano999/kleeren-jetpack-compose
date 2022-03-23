@@ -58,7 +58,7 @@ class ShoppingCartScreenViewModel @Inject constructor() : ViewModel() {
                     .addOnSuccessListener {
                         Log.d("Shopping", "placeOrder: $it")
                     }
-                _deletingProduct.value = true
+                _deletingProduct.value = false
             }
         }
     }
