@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.* // ktlint-disable no-wildcard-imports
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,8 +77,8 @@ fun HomeScreen(
         navController.navigate(route = KleerenScreens.ProductScreen.route + "/${product.id}")
     }
 
-    val salesProducts: MutableList<MProduct> = viewModel.salesProducts
-    val arrivalProducts: MutableList<MProduct> = viewModel.arrivalsProducts
+    val salesProducts: List<MProduct> = viewModel.salesProducts.collectAsState().value
+    val arrivalProducts: List<MProduct> = viewModel.arrivalsProducts.collectAsState().value
 
     Scaffold(bottomBar = {
         BottomAppBar(
